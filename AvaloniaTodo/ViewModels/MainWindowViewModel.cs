@@ -17,10 +17,9 @@ public class MainWindowViewModel : ViewModelBase
         private set => this.RaiseAndSetIfChanged(ref _contentViewModel, value);
     }
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(ToDoListService todoListService)
     {
-        var service = new ToDoListService();
-        ToDoList = new ToDoListViewModel(service.GetItems());
+        ToDoList = new ToDoListViewModel(todoListService.GetItems());
         _contentViewModel = ToDoList;
     }
 
