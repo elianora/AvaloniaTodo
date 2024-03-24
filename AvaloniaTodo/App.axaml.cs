@@ -5,34 +5,33 @@ using AvaloniaTodo.ViewModels;
 using AvaloniaTodo.Views;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AvaloniaTodo
+namespace AvaloniaTodo;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    public override void Initialize()
     {
-        public override void Initialize()
+        AvaloniaXamlLoader.Load(this);
+    }
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        // Register all the services needed for the application to run
+        var collection = new ServiceCollection();
+        collection.AddCommonServices();
+
+        // Creates a ServiceProvider containing services from the provided IServiceCollection
+        var services = collection.BuildServiceProvider();
+
+        var vm = services.GetRequiredService<MainWindowViewModel>();
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            AvaloniaXamlLoader.Load(this);
-        }
-
-        public override void OnFrameworkInitializationCompleted()
-        {
-            // Register all the services needed for the application to run
-            var collection = new ServiceCollection();
-            collection.AddCommonServices();
-
-            // Creates a ServiceProvider containing services from the provided IServiceCollection
-            var services = collection.BuildServiceProvider();
-
-            var vm = services.GetRequiredService<MainWindowViewModel>();
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            desktop.MainWindow = new MainWindow
             {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = vm,
-                };
-            }
-
-            base.OnFrameworkInitializationCompleted();
+                DataContext = vm,
+            };
         }
+
+        base.OnFrameworkInitializationCompleted();
     }
 }
